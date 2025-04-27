@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>简单日志查看器</h1>
-    <form method="get" action="/logs">
+    <form id="logSearchForm"></form>
         <!-- 新增时间选择 -->
         <label for="startTime">开始时间:</label>
         <input type="datetime-local" id="startTime" name="startTime">
@@ -38,7 +38,7 @@
         <input type="text" name="searchText" id="searchText" th:value="${searchText}">
         <label for="threadId">线程ID:</label>
         <input type="text" name="threadId" id="threadId" th:value="${threadId}">
-        <button type="submit">搜索</button>
+        <button type="submit" onclick="submitForm(event)">搜索</button>
     </form>
         <table border="1">
         <thead>
@@ -156,6 +156,34 @@
                 url += `&endTime=${endTimestamp}`;
             }
             window.location.href = url;
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const startTime = new Date(document.getElementById('startTime').value).getTime();
+            const endTime = new Date(document.getElementById('endTime').value).getTime();
+
+            const params = new URLSearchParams();
+            params.append('startTime', startTime);
+            params.append('endTime', endTime);
+            params.append('project', document.getElementById('project').value);
+            params.append('environment', document.getElementById('environment').value);
+            params.append('logFile', document.getElementById('logFile').value);
+
+            const searchText = document.getElementById('searchText').value;
+            const threadId = document.getElementById('threadId').value;
+
+            if (searchText) {
+                params.append('searchText', searchText);
+            }
+            if (threadId) {
+                params.append('threadId', threadId);
+            }
+
+            console.log(params)
+
+            window.location.href = '/logs?' + params.toString();
         }
     </script>
 </body>
