@@ -5,6 +5,8 @@ import com.example.logviewer.factory.SQLiteConnectionFactory;
 import com.example.logviewer.model.DateRange;
 import com.example.logviewer.model.LogEntry;
 import com.example.logviewer.util.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -29,6 +31,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 @Component
 public class SQLiteRepository implements LogRepository {
 
+    private static final Logger LOGGER  = LoggerFactory.getLogger(SQLiteRepository.class);
     private static final Set<String> tables = new ConcurrentSkipListSet<>();
 
     @Override
@@ -82,7 +85,8 @@ public class SQLiteRepository implements LogRepository {
     }
 
     @Override
-    public List<LogEntry> query(DateRange range, String project, String env, String podName, String threadId, String keyword) {
+    public List<LogEntry> query(DateRange range, String project, String env, String podName, String threadId,
+                                String keyword, int page, int size) {
         List<LogEntry> logEntries = new ArrayList<>();
         try (Connection connection = SQLiteConnectionFactory.getConnection()) {
             LocalDateTime startDateTime = DateUtils.convertToLocalDateTime(range.getStartTimestamp());
@@ -113,6 +117,8 @@ public class SQLiteRepository implements LogRepository {
                 sql += " AND message like ?";
                 params.add("%" + keyword + "%");
             }
+
+            sql += String.format(" limit %d, %d", page * size, (page+ 1) *size); // page 页号从0开始
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             for (int i = 0; i < params.size(); i++) {
                 preparedStatement.setObject(i + 1, params.get(i));
@@ -131,7 +137,7 @@ public class SQLiteRepository implements LogRepository {
                 logEntries.add(logEntry);
             }
         } catch (SQLException e) {
-            throw new LogEntryWriteException("save logEntry to sqlite error", e);
+            LOGGER.warn("查询日志失败", e);
         }
         return logEntries;
     }

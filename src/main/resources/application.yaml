@@ -12,3 +12,6 @@ sys:
     - space-\w+-(test|prod)-\w+-\w+\.log
   log-queue-size: 2048
   thread-size: 8
+spring:
+  thymeleaf:
+    cache: false

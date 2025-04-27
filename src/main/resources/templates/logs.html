@@ -6,38 +6,47 @@
 <body>
     <h1>简单日志查看器</h1>
     <form method="get" action="/logs">
+        <!-- 新增时间选择 -->
+        <label for="startTime">开始时间:</label>
+        <input type="datetime-local" id="startTime" name="startTime" th:value="${startTime}">
+        <label for="endTime">结束时间:</label>
+        <input type="datetime-local" id="endTime" name="endTime" th:value="${endTime}">
+
         <label for="project">项目:</label>
         <select name="project" id="project">
-            <option value="space-api">space-api</option>
-            <option value="space-work">space-work</option>
-            <option value="space-task">space-task</option>
-            <option value="space-base-business">space-base-business</option>
-            <option value="space-email-mq-consumer">space-email-mq-consumer</option>
-            <option value="space-game-pc">space-game-pc</option>
-            <option value="space-gateway">space-gateway</option>
-            <option value="space-gateway">space-member</option>
-            <option value="space-mq-consumer">space-mq-consumer</option>
-            <option value="space-sdk-cp">space-sdk-cp</option>
+            <option value="space-api" th:selected="${project.equals('space-api')}">space-api</option>
+            <option value="space-work" th:selected="${project.equals('space-work')}">space-work</option>
+            <option value="space-task" th:selected="${project.equals('space-task')}">space-task</option>
+            <option value="space-base-business" th:selected="${project.equals('space-base-business')}">space-base-business</option>
+            <option value="space-email-mq-consumer" th:selected="${project.equals('space-email-mq-consumer')}">space-email-mq-consumer</option>
+            <option value="space-game-pc" th:selected="${project.equals('space-game-pc')}">space-game-pc</option>
+            <option value="space-gateway" th:selected="${project.equals('space-gateway')}">space-gateway</option>
+            <option value="space-member" th:selected="${project.equals('space-member')}">space-member</option>
+            <option value="space-mq-consumer" th:selected="${project.equals('space-mq-consumer')}">space-mq-consumer</option>
+            <option value="space-sdk-cp" th:selected="${project.equals('space-sdk-cp')}">space-sdk-cp</option>
         </select>
         <label for="environment">环境:</label>
         <select name="environment" id="environment">
-            <option value="prod">正式环境</option>
-            <option value="test">测试环境</option>
+            <option value="prod" th:attr="(selected=${environment.equals('prod')})">正式环境</option>
+            <option value="test" th:attr="(selected=${environment.equals('test')})">测试环境</option>
         </select>
         <label for="logFile">日志文件:</label>
         <select name="logFile" id="logFile">
             <option th:each="file : ${logFiles}" th:value="${file}" th:text="${file}" th:attr="(selected=${file.equals(logFileName)})"></option>
         </select>
         <label for="searchText">搜索文本:</label>
-        <input type="text" name="searchText" id="searchText">
+        <input type="text" name="searchText" id="searchText" th:value="${searchText}">
         <label for="threadId">线程ID:</label>
-        <input type="text" name="threadId" id="threadId">
+        <input type="text" name="threadId" id="threadId" th:value="${threadId}">
         <button type="submit">搜索</button>
     </form>
         <table border="1">
         <thead>
             <tr>
                 <th>时间</th>
+                <th>level</th>
+                <th>线程id</th>
+                <th>logger</th>
                 <th>日志内容</th>
             </tr>
         </thead>
@@ -45,25 +54,89 @@
             <tr th:each="log : ${logs}">
 <!--                <td th:text="${#dates.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>-->
                 <td th:text="${log.logTime}"></td>
+                <td th:text="${log.level}"></td>
+                <td th:text="${log.threadId}"></td>
+                <td th:text="${log.logger}"></td>
                 <td th:text="${log.message}"></td>
             </tr>
         </tbody>
     </table>
     <div>
-        <button th:if="${page > 0}" th:data-project="${project}" th:data-environment="${environment}" th:data-search-text="${searchText}" th:data-thread-id="${threadId}" th:data-page="${page}" th:data-size="${size}" onclick="navigatePage(this, -1)">上一页</button>
-        <span>当前页: <span th:text="${page + 1}"></span></span>
-        <button th:data-project="${project}" th:data-environment="${environment}" th:data-search-text="${searchText}" th:data-thread-id="${threadId}" th:data-page="${page}" th:data-size="${size}" onclick="navigatePage(this, 1)">下一页</button>
+<!--        <span th:text="${searchText != 'null' ? searchText:''}"></span>
+        <span th:text="${searchText}"></span>-->
+        <button th:if="${page > 0}" th:data-project="${project}"
+                th:data-environment="${environment}"
+                th:data-search-text="${searchText}"
+                th:data-thread-id="${threadId}"
+                th:data-page="${page}"
+                th:data-size="${size}"
+                onclick="navigatePage(this, -1)">上一页</button>
+        <span>当前页: <span th:text="${page}"></span></span>
+        <button th:data-project="${project}"
+                th:data-environment="${environment}"
+                th:data-search-text="${searchText}"
+                th:data-thread-id="${threadId}"
+                th:data-page="${page}"
+                th:data-size="${size}"
+                onclick="navigatePage(this, 1)">下一页</button>
     </div>
     <script>
+
+        // 设置默认时间
+        document.addEventListener('DOMContentLoaded', function () {
+            const now = new Date();
+            const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
+
+            function formatDateTime(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+
+            document.getElementById('startTime').value = formatDateTime(fifteenMinutesAgo);
+            document.getElementById('endTime').value = formatDateTime(now);
+        });
+
+
         function navigatePage(button, direction) {
-            const project = button.getAttribute('data-project');
-            const environment = button.getAttribute('data-environment');
+            const project = document.getElementById('project').value;
+            const environment = document.getElementById('environment').value;
             const searchText = button.getAttribute('data-search-text');
             const threadId = button.getAttribute('data-thread-id');
             const page = parseInt(button.getAttribute('data-page')) + direction;
             const size = button.getAttribute('data-size');
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            let url = '?';
+            if (project) {
+                url += `&project=${project}`;
+            }
+            if (environment) {
+                url += `&environment=${environment}`;
+            }
+            if (searchText) {
+                url += `&searchText=${searchText}`;
+            }
 
-            const url = `?project=${project}&environment=${environment}&searchText=${searchText}&threadId=${threadId}&page=${page}&size=${size}`;
+            if (threadId) {
+                url += `&threadId=${threadId}`;
+            }
+            if (page) {
+                url += `&page=${page}`;
+            }
+            if (size) {
+                url += `&size=${size}`;
+            }
+
+            if (startTime) {
+                url += `&startTime=${startTime}`;
+            }
+            if (endTime) {
+                url += `&endTime=${endTime}`;
+            }
             window.location.href = url;
         }
     </script>
