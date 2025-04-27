@@ -8,9 +8,9 @@
     <form method="get" action="/logs">
         <!-- 新增时间选择 -->
         <label for="startTime">开始时间:</label>
-        <input type="datetime-local" id="startTime" name="startTime" th:value="${startTime}">
+        <input type="datetime-local" id="startTime" name="startTime">
         <label for="endTime">结束时间:</label>
-        <input type="datetime-local" id="endTime" name="endTime" th:value="${endTime}">
+        <input type="datetime-local" id="endTime" name="endTime">
 
         <label for="project">项目:</label>
         <select name="project" id="project">
@@ -52,8 +52,9 @@
         </thead>
         <tbody>
             <tr th:each="log : ${logs}">
-<!--                <td th:text="${#dates.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>-->
-                <td th:text="${log.logTime}"></td>
+<!--                <td th:text="${#dates.format(log.logTime, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>-->
+<!--                <td th:text="${log.logTime}"></td>-->
+                <td th:text="${#temporals.format(log.logTime, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
                 <td th:text="${log.level}"></td>
                 <td th:text="${log.threadId}"></td>
                 <td th:text="${log.logger}"></td>
@@ -64,7 +65,10 @@
     <div>
 <!--        <span th:text="${searchText != 'null' ? searchText:''}"></span>
         <span th:text="${searchText}"></span>-->
-        <button th:if="${page > 0}" th:data-project="${project}"
+        <button th:if="${page > 0}"
+                th:data-startTime="${startTime}"
+                th:data-endTime="${endTime}"
+                th:data-project="${project}"
                 th:data-environment="${environment}"
                 th:data-search-text="${searchText}"
                 th:data-thread-id="${threadId}"
@@ -72,7 +76,9 @@
                 th:data-size="${size}"
                 onclick="navigatePage(this, -1)">上一页</button>
         <span>当前页: <span th:text="${page}"></span></span>
-        <button th:data-project="${project}"
+        <button id="nextButton" th:data-startTime="${startTime}"
+                th:data-endTime="${endTime}"
+                th:data-project="${project}"
                 th:data-environment="${environment}"
                 th:data-search-text="${searchText}"
                 th:data-thread-id="${threadId}"
@@ -81,9 +87,11 @@
                 onclick="navigatePage(this, 1)">下一页</button>
     </div>
     <script>
-
         // 设置默认时间
         document.addEventListener('DOMContentLoaded', function () {
+            var startTime = document.getElementById('nextButton').getAttribute('data-startTime');
+            var endTime = document.getElementById('nextButton').getAttribute('data-endTime');
+            console.log("-----",startTime, endTime)
             const now = new Date();
             const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
 
@@ -96,10 +104,17 @@
                 return `${year}-${month}-${day}T${hours}:${minutes}`;
             }
 
-            document.getElementById('startTime').value = formatDateTime(fifteenMinutesAgo);
-            document.getElementById('endTime').value = formatDateTime(now);
-        });
+            if (startTime && endTime) {
+                const startDate = new Date(parseInt(startTime));
+                const endDate = new Date(parseInt(endTime));
+                document.getElementById('startTime').value = formatDateTime(startDate);
+                document.getElementById('endTime').value = formatDateTime(endDate);
+            } else {
+                document.getElementById('startTime').value = formatDateTime(fifteenMinutesAgo);
+                document.getElementById('endTime').value = formatDateTime(now);
+            }
 
+        });
 
         function navigatePage(button, direction) {
             const project = document.getElementById('project').value;
@@ -108,8 +123,13 @@
             const threadId = button.getAttribute('data-thread-id');
             const page = parseInt(button.getAttribute('data-page')) + direction;
             const size = button.getAttribute('data-size');
-            const startTime = document.getElementById('startTime').value;
-            const endTime = document.getElementById('endTime').value;
+            
+            // Convert datetime to timestamps
+            const startTimeStr = document.getElementById('startTime').value;
+            const endTimeStr = document.getElementById('endTime').value;
+            const startTimestamp = new Date(startTimeStr).getTime();
+            const endTimestamp = new Date(endTimeStr).getTime();
+
             let url = '?';
             if (project) {
                 url += `&project=${project}`;
@@ -120,7 +140,6 @@
             if (searchText) {
                 url += `&searchText=${searchText}`;
             }
-
             if (threadId) {
                 url += `&threadId=${threadId}`;
             }
@@ -130,12 +149,11 @@
             if (size) {
                 url += `&size=${size}`;
             }
-
-            if (startTime) {
-                url += `&startTime=${startTime}`;
+            if (startTimestamp) {
+                url += `&startTime=${startTimestamp}`;
             }
-            if (endTime) {
-                url += `&endTime=${endTime}`;
+            if (endTimestamp) {
+                url += `&endTime=${endTimestamp}`;
             }
             window.location.href = url;
         }

@@ -17,8 +17,8 @@ public class SQLiteConnectionFactory {
         return connection;
     }
 
-    public static void createTableIfNotExists(Connection conn, String tableName) throws SQLException {
-        try (Statement stmt = conn.createStatement()) {
+    public static void createTableIfNotExists(String tableName) throws SQLException {
+        try (Statement stmt = SQLiteConnectionFactory.getConnection().createStatement()) {
             stmt.execute("CREATE TABLE IF NOT EXISTS " + tableName + "(" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "project VARCHAR(30)," +

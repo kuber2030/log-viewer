@@ -71,8 +71,25 @@ public class LogMergerService implements LifeCycle {
 
     private void writeLogToRepository() {
         LogParserContext defaultContext = LogParserContext.defaultContext();
+        // SQLite不支持并发写入，写入是库级别的锁，因此只能单线程。
+        Thread thread = new Thread(() -> {
+            while (running) {
+                try {
+                    // 为每个 project 创建一个专门的处理线程
+                    for (String file : getFileNames()) {
+                        processProject(file, defaultContext);
+                    }
+                    TimeUnit.SECONDS.sleep(1); // 每轮处理完等待1秒
+                } catch (Exception e) {
+                    // 不响应中断，需要保证该线程永远运行
+                    LOGGER.warn("", e);
+                }
+            }
+        });
+        thread.setName("SQLite-thread-write-0");
+        thread.start();
         // 只启动一个常驻线程负责调度
-        executors.execute(() -> {
+        /* executors.execute(() -> {
             while (running) {
                 try {
                     // 为每个 project 创建一个专门的处理线程
@@ -83,11 +100,7 @@ public class LogMergerService implements LifeCycle {
                         if (!processingFiles.contains(file)) {
                             processingFiles.add(file);
                             executors.execute(() -> {
-                                try {
-                                    processProject(file, defaultContext);
-                                } finally {
-                                    processingFiles.remove(file);
-                                }
+                                processProject(file, defaultContext);
                             });
                         }
                         processProject(file, defaultContext);
@@ -98,7 +111,7 @@ public class LogMergerService implements LifeCycle {
                     break;
                 }
             }
-        });
+        });*/
     }
 
     private void processProject(String fileName, LogParserContext defaultContext) {
@@ -107,13 +120,11 @@ public class LogMergerService implements LifeCycle {
         List<RawLine> rawLines = new ArrayList<>(1024);
         
         try {
-            while (running && System.currentTimeMillis() < startTimestamp + 3000 && count < 512) {
+            while (running && System.currentTimeMillis() < startTimestamp + 1000 && count < 512) {
                 RawLine rawLine = routingBlockQueue.poll(fileName);
                 if (rawLine != null) {
                     rawLines.add(rawLine);
                     count++;
-                } else {
-                    TimeUnit.MILLISECONDS.sleep(10);
                 }
             }
             
@@ -123,9 +134,6 @@ public class LogMergerService implements LifeCycle {
                     logRepository.save(logEntries);
                 }
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LOGGER.warn("fileName {} processing interrupted", fileName);
         } catch (Exception e) {
             LOGGER.error("Error processing fileName {}", fileName, e);
         }

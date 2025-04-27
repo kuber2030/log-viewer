@@ -120,7 +120,7 @@ public class LogTailerService implements LifeCycle {
                 if (line.trim().isEmpty()) {
                     return;
                 }
-                System.out.println("监听到日志：" + line);
+//                System.out.println("监听到日志：" + Thread.currentThread().getName() + ": " + line);
                 logMergerService.writeAsync(new RawLine(project, file.getName(), line, false));
             }
 

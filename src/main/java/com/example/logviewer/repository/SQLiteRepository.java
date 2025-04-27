@@ -37,7 +37,7 @@ public class SQLiteRepository implements LogRepository {
     @Override
     public void save(List<LogEntry> logEntries) {
         try (Connection connection = SQLiteConnectionFactory.getConnection()) {
-            createTableIfNotExistsJDBC(connection, getTableName(logEntries.get(0)));
+            createTableIfNotExistsJDBC(getTableName(logEntries.get(0)));
             connection.setAutoCommit(false);
             String sql = "insert into " + getTableName(logEntries.get(0)) + "(project, environment, logTime, level, threadId, logger, message) values( ?, ?, ?, ?, ?, ?, ?)";
             System.out.println(sql);
@@ -54,16 +54,16 @@ public class SQLiteRepository implements LogRepository {
 
     }
 
-    private void createTableIfNotExistsJDBC(Connection connection, String tableName) throws SQLException {
-        if (!tableExistsJDBC(connection, tableName)) {
-            SQLiteConnectionFactory.createTableIfNotExists(connection, tableName);
+    private void createTableIfNotExistsJDBC(String tableName) throws SQLException {
+        if (!tableExistsJDBC(tableName)) {
+            SQLiteConnectionFactory.createTableIfNotExists(tableName);
         }
     }
 
     @Override
     public void save(LogEntry logEntry) {
         try (Connection connection = SQLiteConnectionFactory.getConnection()) {
-            createTableIfNotExistsJDBC(connection, getTableName(logEntry));
+            createTableIfNotExistsJDBC(getTableName(logEntry));
             PreparedStatement preparedStatement = connection.prepareStatement("insert into " + getTableName(logEntry) + "(project, environment, logTime, level, threadId, logger, message) values ( ?, ?, ?, ?, ?, ?, ?)");
             makePrepartedStatement(logEntry, preparedStatement);
             preparedStatement.execute();
@@ -128,7 +128,7 @@ public class SQLiteRepository implements LogRepository {
                 LogEntry logEntry = new LogEntry(resultSet.getString("project"),
                         resultSet.getString("environment"),
                         null,
-                        DateUtils.convertToLocalDateTime(resultSet.getDate("logTime")),
+                        DateUtils.convertToLocalDateTime(resultSet.getTimestamp("logTime")),
                         resultSet.getString("level"),
                         resultSet.getString("threadId"),
                         resultSet.getString("logger"),
@@ -148,11 +148,11 @@ public class SQLiteRepository implements LogRepository {
         return String.format("%s_%s", project.replace("-", "_"), suffix); // sqlite不支持-，所以用_替换
     }
 
-    public static boolean tableExistsJDBC(Connection conn, String tableName) {
+    public static boolean tableExistsJDBC(String tableName) {
         if (tables.contains(tableName)) {
             return true;
         }
-        try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null)) {
+        try (ResultSet rs = SQLiteConnectionFactory.getConnection().getMetaData().getTables(null, null, tableName, null)) {
             if (rs.next()) {
                 tables.add(tableName);
                 return true;

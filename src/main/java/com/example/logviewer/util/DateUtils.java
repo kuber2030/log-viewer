@@ -50,8 +50,10 @@ public class DateUtils {
     }
 
     // 将java.sql.Date转换为LocalDateTime
-    public static java.time.LocalDateTime convertToLocalDateTime(java.sql.Date sqlDate) {
-        return sqlDate.toLocalDate().atStartOfDay();
+    public static java.time.LocalDateTime convertToLocalDateTime(java.sql.Timestamp timestamp) {
+        return timestamp.toLocalDateTime();
+//        return LocalDateTime.ofInstant(sqlDate.toInstant(), java.time.ZoneId.systemDefault());
     }
+
 
 }

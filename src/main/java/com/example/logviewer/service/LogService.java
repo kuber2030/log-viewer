@@ -128,8 +128,9 @@ public class LogService {
         }
     }*/
 
-    public List<LogEntry> getLogs2(String project, String environment, String logFileName, String searchText, String threadId, int page, int size) throws IOException {
-        return logRepository.query(new DateRange(1745573389838L, 1745586311323L), project, environment, logFileName, threadId, searchText, page, size);
+    public List<LogEntry> getLogs2(Long startTime, Long endTime, String project, String environment, String logFileName,
+                                   String searchText, String threadId, int page, int size) throws IOException {
+        return logRepository.query(new DateRange(startTime, endTime), project, environment, logFileName, threadId, searchText, page, size);
     }
 
     public List<String> listLogFiles(String project, String environment) throws IOException {

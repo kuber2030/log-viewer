@@ -1,14 +1,21 @@
 package com.example.logviewer.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class LogEntry {
 
     private String project;
     private String environment;
     private String logFileName;
-    private LocalDateTime logTime;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+@JsonFormat(
+        shape = JsonFormat.Shape.STRING,
+        pattern = "yyyy-MM-dd HH:mm:ss",
+        timezone = "Asia/Shanghai"  // 指定时区
+)
+        private LocalDateTime logTime;
     private String level;
     private String threadId;
     private String logger;
