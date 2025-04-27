@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>简单日志查看器</title>
+</head>
+<body>
+    <h1>简单日志查看器</h1>
+    <form method="get" action="/logs">
+        <label for="project">项目:</label>
+        <select name="project" id="project">
+            <option value="space-api">space-api</option>
+            <option value="space-work">space-work</option>
+            <option value="space-task">space-task</option>
+            <option value="space-base-business">space-base-business</option>
+            <option value="space-email-mq-consumer">space-email-mq-consumer</option>
+            <option value="space-game-pc">space-game-pc</option>
+            <option value="space-gateway">space-gateway</option>
+            <option value="space-gateway">space-member</option>
+            <option value="space-mq-consumer">space-mq-consumer</option>
+            <option value="space-sdk-cp">space-sdk-cp</option>
+        </select>
+        <label for="environment">环境:</label>
+        <select name="environment" id="environment">
+            <option value="prod">正式环境</option>
+            <option value="test">测试环境</option>
+        </select>
+        <label for="logFile">日志文件:</label>
+        <select name="logFile" id="logFile">
+            <option th:each="file : ${logFiles}" th:value="${file}" th:text="${file}" th:attr="(selected=${file.equals(logFileName)})"></option>
+        </select>
+        <label for="searchText">搜索文本:</label>
+        <input type="text" name="searchText" id="searchText">
+        <label for="threadId">线程ID:</label>
+        <input type="text" name="threadId" id="threadId">
+        <button type="submit">搜索</button>
+    </form>
+        <table border="1">
+        <thead>
+            <tr>
+                <th>时间</th>
+                <th>日志内容</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="log : ${logs}">
+<!--                <td th:text="${#dates.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>-->
+                <td th:text="${log.logTime}"></td>
+                <td th:text="${log.message}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <button th:if="${page > 0}" th:data-project="${project}" th:data-environment="${environment}" th:data-search-text="${searchText}" th:data-thread-id="${threadId}" th:data-page="${page}" th:data-size="${size}" onclick="navigatePage(this, -1)">上一页</button>
+        <span>当前页: <span th:text="${page + 1}"></span></span>
+        <button th:data-project="${project}" th:data-environment="${environment}" th:data-search-text="${searchText}" th:data-thread-id="${threadId}" th:data-page="${page}" th:data-size="${size}" onclick="navigatePage(this, 1)">下一页</button>
+    </div>
+    <script>
+        function navigatePage(button, direction) {
+            const project = button.getAttribute('data-project');
+            const environment = button.getAttribute('data-environment');
+            const searchText = button.getAttribute('data-search-text');
+            const threadId = button.getAttribute('data-thread-id');
+            const page = parseInt(button.getAttribute('data-page')) + direction;
+            const size = button.getAttribute('data-size');
+
+            const url = `?project=${project}&environment=${environment}&searchText=${searchText}&threadId=${threadId}&page=${page}&size=${size}`;
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

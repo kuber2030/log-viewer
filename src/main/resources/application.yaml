@@ -1,0 +1,14 @@
+sys:
+  log-directory:
+    - /mnt/ldshop/logs/space-api
+#    - /mnt/ldshop/logs/space-base-business
+#    - /mnt/ldshop/logs/space-email-mq-consumer
+#    - /mnt/ldshop/logs/space-gateway
+#    - /mnt/ldshop/logs/space-member
+#    - /mnt/ldshop/logs/space-mq-consumer
+#    - /mnt/ldshop/logs/space-task
+#    - /mnt/ldshop/logs/space-work
+  includes-pattern:
+    - space-\w+-(test|prod)-\w+-\w+\.log
+  log-queue-size: 2048
+  thread-size: 8
