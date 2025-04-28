@@ -122,4 +122,16 @@ public class SQLiteTableRepository implements TableRepository{
         }
         return tableAnalyses;
     }
+
+    @Override
+    public synchronized void vacuum() {
+        try (Connection connection = SQLiteConnectionFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("VACUUM")) {
+
+        } catch (Exception e) {
+            LOGGER.error("vacuum operation error", e);
+        }
+    }
+
 }

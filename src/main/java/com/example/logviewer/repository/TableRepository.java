@@ -37,4 +37,9 @@ public interface TableRepository {
      */
     List<TableAnalysis> getTableSummaryAnalysis();
 
+    /**
+     * VACUUM空间优化
+     */
+    void vacuum();
+
 }

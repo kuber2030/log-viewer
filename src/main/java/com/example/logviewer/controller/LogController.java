@@ -70,6 +70,16 @@ public class LogController {
         }
     }
 
+    @PostMapping("/vacuum")
+    public ResponseEntity<Void> vacuum() {
+        try {
+            tableRepository.vacuum();
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @GetMapping("/analysis")
     public String analysis(Model model) {
         TableSummaryAnalysis summaryAnalysis = tableRepository.summaryAnalysis();
