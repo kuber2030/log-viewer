@@ -85,7 +85,7 @@ public class SQLiteRepository implements LogRepository {
     }
 
     @Override
-    public List<LogEntry> query(DateRange range, String project, String env, String podName, String threadId,
+    public List<LogEntry> query(DateRange range, String project, String env, String level, String threadId,
                                 String keyword, int page, int size) {
         List<LogEntry> logEntries = new ArrayList<>();
         try (Connection connection = SQLiteConnectionFactory.getConnection()) {
@@ -104,9 +104,9 @@ public class SQLiteRepository implements LogRepository {
                 sql += " AND environment = ?";
                 params.add(env);
             }
-            if (StringUtils.hasText(podName)) {
-                sql += " AND podName = ?";
-                params.add(podName);
+            if (StringUtils.hasText(level)) {
+                sql += " AND level = ?";
+                params.add(level);
             }
             if (StringUtils.hasText(threadId)) {
                 sql += " AND threadId = ?";

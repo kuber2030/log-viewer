@@ -32,9 +32,13 @@
             <option value="prod" th:attr="(selected=${environment.equals('prod')})">正式环境</option>
             <option value="test" th:attr="(selected=${environment.equals('test')})">测试环境</option>
         </select>
-        <label for="logFile">日志文件:</label>
-        <select name="logFile" id="logFile">
-            <option th:each="file : ${logFiles}" th:value="${file}" th:text="${file}" th:attr="(selected=${file.equals(logFileName)})"></option>
+        <label for="level">日志级别:</label>
+        <select name="level" id="level">
+            <option value="INFO" th:selected="${level.equals('INFO')}">INFO</option>
+            <option value="ERROR" th:selected="${level.equals('ERROR')}">ERROR</option>
+            <option value="WARN" th:selected="${level.equals('WARN')}">WARN</option>
+            <option value="DEBUG" th:selected="${level.equals('DEBUG')}">DEBUG</option>
+<!--            <option th:each="file : ${logFiles}" th:value="${file}" th:text="${file}" th:attr="(selected=${file.equals(logFileName)})"></option>-->
         </select>
         <label for="searchText">搜索文本:</label>
         <input type="text" name="searchText" id="searchText" th:value="${searchText}">
@@ -171,7 +175,7 @@
             params.append('endTime', endTime);
             params.append('project', document.getElementById('project').value);
             params.append('environment', document.getElementById('environment').value);
-            params.append('logFile', document.getElementById('logFile').value);
+            params.append('level', document.getElementById('level').value);
 
             const searchText = document.getElementById('searchText').value;
             const threadId = document.getElementById('threadId').value;

@@ -30,12 +30,12 @@ public interface LogRepository {
      * @param range
      * @param project
      * @param env
-     * @param podName
+     * @param level
      * @param threadId
      * @param keyword
      * @return
      */
-    List<LogEntry> query(DateRange range, String project, String env, String podName, String threadId,
+    List<LogEntry> query(DateRange range, String project, String env, String level, String threadId,
                          String keyword, int page, int size);
 
 }
