@@ -2,6 +2,7 @@ package com.example.logviewer.core;
 
 
 import com.example.logviewer.config.SysProps;
+import com.example.logviewer.model.QueueStatus;
 import com.example.logviewer.model.RawLine;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +57,20 @@ public class RoutingBlockQueue {
 
     private BlockingQueue<RawLine> getQueue(String project) {
         return projectToQueueMap.get(project);
+    }
+
+    /**
+     * 获取队列状态
+     * @return
+     */
+    public List<QueueStatus> queueStatus() {
+        List<QueueStatus> result = new ArrayList<>();
+        List<String> routingKeys = getRoutingKeys();
+        for (String routingKey : routingKeys) {
+            BlockingQueue<RawLine> queue = getQueue(routingKey);
+            result.add(new QueueStatus(routingKey, queue.remainingCapacity()));
+        }
+        return result;
     }
 
 }

@@ -55,6 +55,24 @@
                 </tbody>
             </table>
         </div>
+
+        <h2>Queue Status</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>队列名称</th>
+                    <th>剩余空间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="table : ${queueStatus}">
+                    <td th:text="${table.queueName}"></td>
+                    <td th:text="${table.remainingCapacity}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>

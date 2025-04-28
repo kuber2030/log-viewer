@@ -6,7 +6,7 @@ sys:
 #    - /mnt/ldshop/logs/space-gateway
 #    - /mnt/ldshop/logs/space-member
 #    - /mnt/ldshop/logs/space-mq-consumer
-#    - /mnt/ldshop/logs/space-task
+    - /mnt/ldshop/logs/space-task
 #    - /mnt/ldshop/logs/space-work
   includes-pattern:
     - space-\w+-(test|prod)-\w+-\w+\.log

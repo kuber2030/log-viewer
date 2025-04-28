@@ -1,5 +1,6 @@
 package com.example.logviewer.controller;
 
+import com.example.logviewer.core.RoutingBlockQueue;
 import com.example.logviewer.model.TableAnalysis;
 import com.example.logviewer.model.TableSummaryAnalysis;
 import com.example.logviewer.repository.TableRepository;
@@ -20,11 +21,13 @@ import java.util.Optional;
 public class LogController {
     private final LogService logService;
     private final TableRepository tableRepository;
+    private final RoutingBlockQueue routingBlockQueue;
 
     @Autowired
-    public LogController(LogService logService, TableRepository tableRepository) {
+    public LogController(LogService logService, TableRepository tableRepository, RoutingBlockQueue routingBlockQueue) {
         this.logService = logService;
         this.tableRepository = tableRepository;
+        this.routingBlockQueue = routingBlockQueue;
     }
 
     @GetMapping("/logs")
@@ -73,6 +76,7 @@ public class LogController {
         List<TableAnalysis> tableAnalysis = tableRepository.getTableSummaryAnalysis();
         model.addAttribute("summaryAnalysis", summaryAnalysis);
         model.addAttribute("tableAnalysis", tableAnalysis);
+        model.addAttribute("queueStatus", routingBlockQueue.queueStatus());
         return "analysis";
     }
 
