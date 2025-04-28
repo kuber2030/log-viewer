@@ -118,6 +118,8 @@ public class SQLiteRepository implements LogRepository {
                 params.add("%" + keyword + "%");
             }
 
+            sql += " ORDER BY logTime DESC";
+
             sql += String.format(" limit %d, %d", page * size, (page+ 1) *size); // page 页号从0开始
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             for (int i = 0; i < params.size(); i++) {

@@ -25,11 +25,11 @@ Kubernetes Log Viewer is a web application designed to facilitate the viewing an
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/kubernetes-log-viewer.git
+   git clone https://github.com/yourusername/log-viewer.git
    ```
 2. Navigate to the project directory:
    ```
-   cd kubernetes-log-viewer
+   cd log-viewer
    ```
 3. Build the project using Maven:
    ```
