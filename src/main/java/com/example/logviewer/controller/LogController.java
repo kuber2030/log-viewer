@@ -1,22 +1,30 @@
 package com.example.logviewer.controller;
 
+import com.example.logviewer.model.TableAnalysis;
+import com.example.logviewer.model.TableSummaryAnalysis;
+import com.example.logviewer.repository.TableRepository;
 import com.example.logviewer.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class LogController {
     private final LogService logService;
+    private final TableRepository tableRepository;
 
     @Autowired
-    public LogController(LogService logService) {
+    public LogController(LogService logService, TableRepository tableRepository) {
         this.logService = logService;
+        this.tableRepository = tableRepository;
     }
 
     @GetMapping("/logs")
@@ -47,6 +55,25 @@ public class LogController {
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         return "logs";
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Void> delete(@RequestParam String tableName) {
+        try {
+            tableRepository.deleteTables(tableName);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/analysis")
+    public String analysis(Model model) {
+        TableSummaryAnalysis summaryAnalysis = tableRepository.summaryAnalysis();
+        List<TableAnalysis> tableAnalysis = tableRepository.getTableSummaryAnalysis();
+        model.addAttribute("summaryAnalysis", summaryAnalysis);
+        model.addAttribute("tableAnalysis", tableAnalysis);
+        return "analysis";
     }
 
 }

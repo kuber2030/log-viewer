@@ -18,3 +18,9 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
+  application:
+    name: LMR
+server:
+  port: 12786
+  servlet:
+    context-path: /lmr

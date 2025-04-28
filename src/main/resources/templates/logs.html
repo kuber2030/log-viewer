@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>简单日志查看器</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <h1>简单日志查看器</h1>
@@ -183,8 +185,9 @@
 
             console.log(params)
 
-            window.location.href = '/logs?' + params.toString();
+            window.location.href = '/lmr/logs?' + params.toString();
         }
     </script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
