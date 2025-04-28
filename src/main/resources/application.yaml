@@ -1,33 +1,3 @@
-sys:
-  log-directory:
-    - /mnt/ldshop/logs/space-api
-    - /mnt/ldshop/logs/space-base-business
-    - /mnt/ldshop/logs/space-email-mq-consumer
-#    - /mnt/ldshop/logs/space-gateway
-#    - /mnt/ldshop/logs/space-member
-    - /mnt/ldshop/logs/space-mq-consumer
-#    - /mnt/ldshop/logs/space-task
-    - /mnt/ldshop/logs/space-work
-  includes-pattern:
-    - space-\w+-(test|prod)-\w+-\w+\.log
-  log-queue-size: 4096
-  thread-size: 1
-  whitelist:
-    - 183.6.88.57
-    - 119.8.96.4
-    - 192.168.12.198
 spring:
-  thymeleaf:
-    cache: false
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: Asia/Shanghai
-  application:
-    name: LMR
-server:
-  port: 12786
-  servlet:
-    context-path: /lmr
-logging:
-  level:
-    root: info
+  profiles:
+    active: dev

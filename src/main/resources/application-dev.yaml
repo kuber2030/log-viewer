@@ -1,0 +1,24 @@
+sys:
+  log-directory:
+    - /mnt/xxx/logs/xxx-api
+  includes-pattern:
+    - xxx-\w+-(test|prod)-\w+-\w+\.log
+  log-queue-size: 4096
+  thread-size: 1
+  whitelist:
+    - 192.168.12.198
+spring:
+  thymeleaf:
+    cache: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+  application:
+    name: LMR
+server:
+  port: 12786
+  servlet:
+    context-path: /lmr
+logging:
+  level:
+    root: info
