@@ -4,96 +4,141 @@
     <title>简单日志查看器</title>
     <meta charset="UTF-8">
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .time-column {
+            min-width: 180px;
+        }
+        .message-column {
+            min-width: 400px;
+        }
+        .logger-column {
+            min-width: 200px;
+        }
+    </style>
 </head>
 <body>
-    <h1>简单日志查看器</h1>
-    <form id="logSearchForm"></form>
-        <!-- 新增时间选择 -->
-        <label for="startTime">开始时间:</label>
-        <input type="datetime-local" id="startTime" name="startTime">
-        <label for="endTime">结束时间:</label>
-        <input type="datetime-local" id="endTime" name="endTime">
+    <div class="container-fluid py-4">
+        <h1 class="mb-4">简单日志查看器</h1>
+        
+        <form id="logSearchForm" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label for="startTime" class="form-label">开始时间:</label>
+                <input type="datetime-local" class="form-control" id="startTime" name="startTime">
+            </div>
+            <div class="col-md-3">
+                <label for="endTime" class="form-label">结束时间:</label>
+                <input type="datetime-local" class="form-control" id="endTime" name="endTime">
+            </div>
+            <div class="col-md-2">
+                <label for="project" class="form-label">项目:</label>
+                <select name="project" id="project" class="form-select">
+                    <option value="space-api" th:selected="${project.equals('space-api')}">space-api</option>
+                    <option value="space-work" th:selected="${project.equals('space-work')}">space-work</option>
+                    <option value="space-task" th:selected="${project.equals('space-task')}">space-task</option>
+                    <option value="space-base-business" th:selected="${project.equals('space-base-business')}">space-base-business</option>
+                    <option value="space-email-mq-consumer" th:selected="${project.equals('space-email-mq-consumer')}">space-email-mq-consumer</option>
+                    <option value="space-game-pc" th:selected="${project.equals('space-game-pc')}">space-game-pc</option>
+                    <option value="space-gateway" th:selected="${project.equals('space-gateway')}">space-gateway</option>
+                    <option value="space-member" th:selected="${project.equals('space-member')}">space-member</option>
+                    <option value="space-mq-consumer" th:selected="${project.equals('space-mq-consumer')}">space-mq-consumer</option>
+                    <option value="space-sdk-cp" th:selected="${project.equals('space-sdk-cp')}">space-sdk-cp</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="environment" class="form-label">环境:</label>
+                <select name="environment" id="environment" class="form-select">
+                    <option value="prod" th:attr="(selected=${environment.equals('prod')})">正式环境</option>
+                    <option value="test" th:attr="(selected=${environment.equals('test')})">测试环境</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="level" class="form-label">日志级别:</label>
+                <select name="level" id="level" class="form-select">
+                    <option value="" disabled th:selected="${level.equals('')}">不限</option>
+                    <option value="INFO" th:selected="${level.equals('INFO')}">INFO</option>
+                    <option value="ERROR" th:selected="${level.equals('ERROR')}">ERROR</option>
+                    <option value="WARN" th:selected="${level.equals('WARN')}">WARN</option>
+                    <option value="DEBUG" th:selected="${level.equals('DEBUG')}">DEBUG</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="threadId" class="form-label">线程ID:</label>
+                <input type="text" class="form-control" name="threadId" id="threadId" th:value="${threadId}">
+            </div>
+            <div class="col-md-3">
+                <label for="searchText" class="form-label">搜索文本:</label>
+                <input type="text" class="form-control" name="searchText" id="searchText" th:value="${searchText}">
+            </div>
+            <div class="col-md-2 align-self-end">
+                <button type="submit" class="btn btn-primary" onclick="submitForm(event)">搜索</button>
+            </div>
+        </form>
 
-        <label for="project">项目:</label>
-        <select name="project" id="project">
-            <option value="space-api" th:selected="${project.equals('space-api')}">space-api</option>
-            <option value="space-work" th:selected="${project.equals('space-work')}">space-work</option>
-            <option value="space-task" th:selected="${project.equals('space-task')}">space-task</option>
-            <option value="space-base-business" th:selected="${project.equals('space-base-business')}">space-base-business</option>
-            <option value="space-email-mq-consumer" th:selected="${project.equals('space-email-mq-consumer')}">space-email-mq-consumer</option>
-            <option value="space-game-pc" th:selected="${project.equals('space-game-pc')}">space-game-pc</option>
-            <option value="space-gateway" th:selected="${project.equals('space-gateway')}">space-gateway</option>
-            <option value="space-member" th:selected="${project.equals('space-member')}">space-member</option>
-            <option value="space-mq-consumer" th:selected="${project.equals('space-mq-consumer')}">space-mq-consumer</option>
-            <option value="space-sdk-cp" th:selected="${project.equals('space-sdk-cp')}">space-sdk-cp</option>
-        </select>
-        <label for="environment">环境:</label>
-        <select name="environment" id="environment">
-            <option value="prod" th:attr="(selected=${environment.equals('prod')})">正式环境</option>
-            <option value="test" th:attr="(selected=${environment.equals('test')})">测试环境</option>
-        </select>
-        <label for="level">日志级别:</label>
-        <span th:value="${level}"></span>
-        <select name="level" id="level">
-            <option value="INFO" th:selected="${level.equals('INFO')}">INFO</option>
-            <option value="ERROR" th:selected="${level.equals('ERROR')}">ERROR</option>
-            <option value="WARN" th:selected="${level.equals('WARN')}">WARN</option>
-            <option value="DEBUG" th:selected="${level.equals('DEBUG')}">DEBUG</option>
-        </select>
-    <label for="threadId">线程ID:</label>
-    <input type="text" name="threadId" id="threadId" th:value="${threadId}">
-        <label for="searchText">搜索文本:</label>
-        <input type="text" name="searchText" id="searchText" th:value="${searchText}">
-        <button type="submit" onclick="submitForm(event)">搜索</button>
-    </form>
-        <table border="1">
-        <thead>
-            <tr>
-                <th>时间</th>
-                <th>level</th>
-                <th>线程id</th>
-                <th>logger</th>
-                <th>日志内容</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="log : ${logs}">
-<!--                <td th:text="${#dates.format(log.logTime, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>-->
-<!--                <td th:text="${log.logTime}"></td>-->
-                <td th:text="${#temporals.format(log.logTime, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
-                <td th:text="${log.level}"></td>
-                <td th:text="${log.threadId}"></td>
-                <td th:text="${log.logger}"></td>
-                <td th:text="${log.message}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
-<!--        <span th:text="${searchText != 'null' ? searchText:''}"></span>
-        <span th:text="${searchText}"></span>-->
-        <button th:if="${page > 0}"
-                th:data-startTime="${startTime}"
-                th:data-endTime="${endTime}"
-                th:data-project="${project}"
-                th:data-environment="${environment}"
-                th:data-level="${level}"
-                th:data-search-text="${searchText}"
-                th:data-thread-id="${threadId}"
-                th:data-page="${page}"
-                th:data-size="${size}"
-                onclick="navigatePage(this, -1)">上一页</button>
-        <span>当前页: <span th:text="${page}"></span></span>
-        <button id="nextButton" th:data-startTime="${startTime}"
-                th:data-endTime="${endTime}"
-                th:data-project="${project}"
-                th:data-environment="${environment}"
-                th:data-level="${level}"
-                th:data-search-text="${searchText}"
-                th:data-thread-id="${threadId}"
-                th:data-page="${page}"
-                th:data-size="${size}"
-                onclick="navigatePage(this, 1)">下一页</button>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="time-column">时间</th>
+                        <th>level</th>
+                        <th>线程id</th>
+                        <th class="logger-column">logger</th>
+                        <th class="message-column">日志内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="log : ${logs}">
+                        <td th:text="${#temporals.format(log.logTime, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
+                        <td>
+                            <span th:text="${log.level}" 
+                                  th:class="${'badge ' + 
+                                  (log.level == 'ERROR' ? 'bg-danger' : '') + 
+                                  (log.level == 'WARN' ? 'bg-warning' : '') + 
+                                  (log.level == 'INFO' ? 'bg-info' : '') + 
+                                  (log.level == 'DEBUG' ? 'bg-secondary' : '')}">
+                            </span>
+                        </td>
+                        <td th:text="${log.threadId}"></td>
+                        <td th:text="${log.logger}"></td>
+                        <td th:text="${log.message}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            <button th:if="${page > 0}" 
+                    class="btn btn-outline-primary"
+                    th:data-startTime="${startTime}"
+                    th:data-endTime="${endTime}"
+                    th:data-project="${project}"
+                    th:data-environment="${environment}"
+                    th:data-level="${level}"
+                    th:data-search-text="${searchText}"
+                    th:data-thread-id="${threadId}"
+                    th:data-page="${page}"
+                    th:data-size="${size}"
+                    onclick="navigatePage(this, -1)">
+                <i class="bi bi-chevron-left"></i> 上一页
+            </button>
+            <span class="align-self-center">当前页: <span th:text="${page}"></span></span>
+            <button id="nextButton" 
+                    class="btn btn-outline-primary"
+                    th:data-startTime="${startTime}"
+                    th:data-endTime="${endTime}"
+                    th:data-project="${project}"
+                    th:data-environment="${environment}"
+                    th:data-level="${level}"
+                    th:data-search-text="${searchText}"
+                    th:data-thread-id="${threadId}"
+                    th:data-page="${page}"
+                    th:data-size="${size}"
+                    onclick="navigatePage(this, 1)">
+                下一页 <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
     </div>
+
+    <!-- 保持原有的 JavaScript 代码不变 -->
     <script>
         // 设置默认时间
         document.addEventListener('DOMContentLoaded', function () {

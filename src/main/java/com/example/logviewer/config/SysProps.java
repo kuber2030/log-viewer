@@ -14,8 +14,6 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "sys")
 public class SysProps {
-
-//    @Value("${log.directory}")
     private List<String> logDirectory;
 
     // 需要监听的文件名的正则表达式
@@ -26,6 +24,9 @@ public class SysProps {
     private Integer logQueueSize;
     // 线程数
     private Integer threadSize;
+
+    // ip白名单
+    private List<String> whitelist;
 
     public List<String> getLogDirectory() {
         return logDirectory;
@@ -57,5 +58,13 @@ public class SysProps {
 
     public void setThreadSize(Integer threadSize) {
         this.threadSize = threadSize;
+    }
+
+    public List<String> getWhitelist() {
+        return whitelist;
+    }
+
+    public void setWhitelist(List<String> whitelist) {
+        this.whitelist = whitelist;
     }
 }

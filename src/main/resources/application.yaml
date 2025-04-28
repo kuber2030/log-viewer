@@ -1,17 +1,21 @@
 sys:
   log-directory:
     - /mnt/ldshop/logs/space-api
-#    - /mnt/ldshop/logs/space-base-business
-#    - /mnt/ldshop/logs/space-email-mq-consumer
-#    - /mnt/ldshop/logs/space-gateway
+    - /mnt/ldshop/logs/space-base-business
+    - /mnt/ldshop/logs/space-email-mq-consumer
+    - /mnt/ldshop/logs/space-gateway
 #    - /mnt/ldshop/logs/space-member
-#    - /mnt/ldshop/logs/space-mq-consumer
+    - /mnt/ldshop/logs/space-mq-consumer
     - /mnt/ldshop/logs/space-task
-#    - /mnt/ldshop/logs/space-work
+    - /mnt/ldshop/logs/space-work
   includes-pattern:
     - space-\w+-(test|prod)-\w+-\w+\.log
   log-queue-size: 4096
   thread-size: 8
+  whitelist:
+    - 183.6.88.57
+    - 119.8.96.4
+    - 192.168.12.198
 spring:
   thymeleaf:
     cache: false

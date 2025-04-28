@@ -80,4 +80,9 @@ public class LogController {
         return "analysis";
     }
 
+    @GetMapping("/no-permission")
+    public String noPermission(Model model) {
+        return "no-permission";
+    }
+
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>访问受限</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .error-template {
+            padding: 40px 15px;
+            text-align: center;
+        }
+        .error-actions {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .error-icon {
+            font-size: 6rem;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="error-template">
+                    <i class="bi bi-shield-lock-fill error-icon mb-4"></i>
+                    <h1>访问受限</h1>
+                    <h2>403 - 权限不足</h2>
+                    <div class="error-details mb-4">
+                        抱歉，您的IP地址没有被授权访问该系统。请联系系统管理员添加您的IP到白名单。
+                    </div>
+                    <div class="error-actions">
+                        <a href="/" class="btn btn-primary btn-lg">
+                            <i class="bi bi-house-door"></i>
+                            返回首页
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
