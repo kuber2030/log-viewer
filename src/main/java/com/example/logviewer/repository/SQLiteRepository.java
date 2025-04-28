@@ -40,7 +40,6 @@ public class SQLiteRepository implements LogRepository {
             createTableIfNotExistsJDBC(getTableName(logEntries.get(0)));
             connection.setAutoCommit(false);
             String sql = "insert into " + getTableName(logEntries.get(0)) + "(project, environment, logTime, level, threadId, logger, message) values( ?, ?, ?, ?, ?, ?, ?)";
-            System.out.println(sql);
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             for (LogEntry logEntry : logEntries) {
                 makePrepartedStatement(logEntry, preparedStatement);

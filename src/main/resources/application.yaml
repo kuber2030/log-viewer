@@ -11,7 +11,7 @@ sys:
   includes-pattern:
     - space-\w+-(test|prod)-\w+-\w+\.log
   log-queue-size: 4096
-  thread-size: 8
+  thread-size: 1
   whitelist:
     - 183.6.88.57
     - 119.8.96.4
@@ -28,3 +28,6 @@ server:
   port: 12786
   servlet:
     context-path: /lmr
+logging:
+  level:
+    root: info

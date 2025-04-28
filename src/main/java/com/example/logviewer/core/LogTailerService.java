@@ -139,7 +139,7 @@ public class LogTailerService implements LifeCycle {
             public void handle(Exception ex) {
                 LOGGER.error("TAILER ERROR", ex);
             }
-        }, 1000, true); // 1秒刷新，从文件头开始
+        }, 5000, true); // 5秒刷新，从文件头开始
     }
 
 
