@@ -79,7 +79,7 @@ public class LogMergerService implements LifeCycle {
                     for (String file : getFileNames()) {
                         processProject(file, defaultContext);
                     }
-                    TimeUnit.SECONDS.sleep(1); // 每轮处理完等待1秒
+                    TimeUnit.MICROSECONDS.sleep(200); // 每轮处理完等待1秒
                 } catch (Exception e) {
                     // 不响应中断，需要保证该线程永远运行
                     LOGGER.warn("", e);
@@ -120,7 +120,7 @@ public class LogMergerService implements LifeCycle {
         List<RawLine> rawLines = new ArrayList<>(1024);
         
         try {
-            while (running && System.currentTimeMillis() < startTimestamp + 1000 && count < 512) {
+            while (running && System.currentTimeMillis() < startTimestamp + 1000 && count < 1024) {
                 RawLine rawLine = routingBlockQueue.poll(fileName);
                 if (rawLine != null) {
                     rawLines.add(rawLine);
