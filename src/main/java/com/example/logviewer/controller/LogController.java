@@ -40,7 +40,7 @@ public class LogController {
             @RequestParam(required = false, defaultValue = "") String searchText,
             @RequestParam(required = false, defaultValue = "") String threadId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "50") int size,
             Model model) throws IOException {
         // Set default time range to last 15 minutes if not specified
         if (startTime == null || endTime == null) {

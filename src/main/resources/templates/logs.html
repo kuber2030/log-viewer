@@ -33,17 +33,17 @@
             <option value="test" th:attr="(selected=${environment.equals('test')})">测试环境</option>
         </select>
         <label for="level">日志级别:</label>
+        <span th:value="${level}"></span>
         <select name="level" id="level">
             <option value="INFO" th:selected="${level.equals('INFO')}">INFO</option>
             <option value="ERROR" th:selected="${level.equals('ERROR')}">ERROR</option>
             <option value="WARN" th:selected="${level.equals('WARN')}">WARN</option>
             <option value="DEBUG" th:selected="${level.equals('DEBUG')}">DEBUG</option>
-<!--            <option th:each="file : ${logFiles}" th:value="${file}" th:text="${file}" th:attr="(selected=${file.equals(logFileName)})"></option>-->
         </select>
+    <label for="threadId">线程ID:</label>
+    <input type="text" name="threadId" id="threadId" th:value="${threadId}">
         <label for="searchText">搜索文本:</label>
         <input type="text" name="searchText" id="searchText" th:value="${searchText}">
-        <label for="threadId">线程ID:</label>
-        <input type="text" name="threadId" id="threadId" th:value="${threadId}">
         <button type="submit" onclick="submitForm(event)">搜索</button>
     </form>
         <table border="1">
@@ -76,6 +76,7 @@
                 th:data-endTime="${endTime}"
                 th:data-project="${project}"
                 th:data-environment="${environment}"
+                th:data-level="${level}"
                 th:data-search-text="${searchText}"
                 th:data-thread-id="${threadId}"
                 th:data-page="${page}"
@@ -86,6 +87,7 @@
                 th:data-endTime="${endTime}"
                 th:data-project="${project}"
                 th:data-environment="${environment}"
+                th:data-level="${level}"
                 th:data-search-text="${searchText}"
                 th:data-thread-id="${threadId}"
                 th:data-page="${page}"
@@ -126,6 +128,7 @@
             const project = document.getElementById('project').value;
             const environment = document.getElementById('environment').value;
             const searchText = button.getAttribute('data-search-text');
+            const level = document.getElementById('level').value;
             const threadId = button.getAttribute('data-thread-id');
             const page = parseInt(button.getAttribute('data-page')) + direction;
             const size = button.getAttribute('data-size');
@@ -145,6 +148,9 @@
             }
             if (searchText) {
                 url += `&searchText=${searchText}`;
+            }
+            if (level) {
+                url += `&level=${level}`;
             }
             if (threadId) {
                 url += `&threadId=${threadId}`;
