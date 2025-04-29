@@ -83,8 +83,10 @@ public class SQLiteTableRepository implements TableRepository{
                 tableSummaryAnalysis.setLogicalData(resultSet.getLong("logical_data_bytes") / 1024);
                 tableSummaryAnalysis.setFreeSpace(resultSet.getLong("free_space_bytes") / 1024);
                 BigDecimal free_space_percent = resultSet.getBigDecimal("free_space_percent");
-                free_space_percent.setScale(6, RoundingMode.HALF_UP);
-                tableSummaryAnalysis.setFreeSpacePercent(free_space_percent + "%");
+                if (free_space_percent != null) {
+                    free_space_percent.setScale(6, RoundingMode.HALF_UP);
+                    tableSummaryAnalysis.setFreeSpacePercent(free_space_percent + "%");
+                }
                 return tableSummaryAnalysis;
             }
         } catch (SQLException e) {

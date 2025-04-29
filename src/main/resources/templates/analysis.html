@@ -13,16 +13,16 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <p><strong>物理大小(KB):</strong> <span th:text="${summaryAnalysis.physicalSize}"></span></p>
+                        <p><strong>物理大小(KB):</strong> <span th:text="${summaryAnalysis?.physicalSize}"></span></p>
                     </div>
                     <div class="col-md-3">
-                        <p><strong>逻辑数据(KB):</strong> <span th:text="${summaryAnalysis.logicalData}"></span></p>
+                        <p><strong>逻辑数据(KB):</strong> <span th:text="${summaryAnalysis?.logicalData}"></span></p>
                     </div>
                     <div class="col-md-3">
-                        <p><strong>空闲空间(KB):</strong> <span th:text="${summaryAnalysis.freeSpace}"></span></p>
+                        <p><strong>空闲空间(KB):</strong> <span th:text="${summaryAnalysis?.freeSpace}"></span></p>
                     </div>
                     <div class="col-md-3">
-                        <p><strong>空闲比例:</strong> <span th:text="${summaryAnalysis.freeSpacePercent}"></span></p>
+                        <p><strong>空闲比例:</strong> <span th:text="${summaryAnalysis?.freeSpacePercent}"></span></p>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
             </table>
         </div>
         <h2>VACUUM Operation</h2>
-        <div>
+        <div class="pb-4">
             <button class="btn btn-primary btn-sm" onclick="vacuum(event)">VACUUM</button>
         </div>
     </div>
