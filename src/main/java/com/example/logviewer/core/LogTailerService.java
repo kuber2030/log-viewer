@@ -81,7 +81,8 @@ public class LogTailerService implements LifeCycle {
             observer.addListener(new FileAlterationListenerAdaptor() {
                 @Override
                 public void onFileCreate(File file) {
-                    startTailer(directory.substring(directory.lastIndexOf("/") + 1), file, true);
+                    // 新文件从头开始处理
+                    startTailer(directory.substring(directory.lastIndexOf("/") + 1), file, false);
                 }
             });
             observers.add(observer);
@@ -100,7 +101,7 @@ public class LogTailerService implements LifeCycle {
                         }).forEach((file) -> {
                             Path parent = Paths.get(file.getParent());
                             String project = parent.getName(parent.getNameCount() - 1).toString();
-                            startTailer(project, file, false);
+                            startTailer(project, file, true);
                         });
             } catch (Exception e) {
                 e.printStackTrace();
