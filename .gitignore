@@ -27,3 +27,5 @@ target
 *.tmp.js
 *.tmp.json
 *.tmp.yml
+logs.db
+src/main/resources/application-prod.yaml

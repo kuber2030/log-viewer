@@ -81,7 +81,7 @@ public class LogTailerService implements LifeCycle {
             observer.addListener(new FileAlterationListenerAdaptor() {
                 @Override
                 public void onFileCreate(File file) {
-                    startTailer(directory.substring(directory.lastIndexOf("/") + 1), file);
+                    startTailer(directory.substring(directory.lastIndexOf("/") + 1), file, true);
                 }
             });
             observers.add(observer);
@@ -100,7 +100,7 @@ public class LogTailerService implements LifeCycle {
                         }).forEach((file) -> {
                             Path parent = Paths.get(file.getParent());
                             String project = parent.getName(parent.getNameCount() - 1).toString();
-                            startTailer(project, file);
+                            startTailer(project, file, false);
                         });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -113,7 +113,7 @@ public class LogTailerService implements LifeCycle {
         executor.shutdown();
     }
 
-    private void startTailer(String project , File file) {
+    private void startTailer(String project , File file, boolean fromEnd) {
         Tailer.create(file, new TailerListenerAdapter() {
             @Override
             public void handle(String line) {
@@ -139,7 +139,7 @@ public class LogTailerService implements LifeCycle {
             public void handle(Exception ex) {
                 LOGGER.error("TAILER ERROR", ex);
             }
-        }, 5000, true); // 5秒刷新，从文件头开始
+        }, 5000, fromEnd); // 5秒刷新，从文件头开始
     }
 
 
