@@ -1,6 +1,6 @@
-# Kubernetes Log Viewer
+# Log Viewer
 
-Kubernetes Log Viewer is a web application designed to facilitate the viewing and searching of logs from Kubernetes pods. The application supports project name switching, environment differentiation (production and testing), and various search functionalities including time, thread ID, and text search. It also features pagination with default sorting by time in descending order.
+log-viewer is a web application designed to facilitate the viewing and searching of logs from Kubernetes pods. The application supports project name switching, environment differentiation (production and testing), and various search functionalities including time, thread ID, and text search. It also features pagination with default sorting by time in descending order.
 
 ## Features
 
@@ -19,7 +19,7 @@ Kubernetes Log Viewer is a web application designed to facilitate the viewing an
 
 - Java 8 or higher
 - Maven 3.6 or higher
-- Access to a mounted log directory at `/mnt/ldshop/logs`
+- Access to a mounted log directory at `/mnt/your-logs-directory`
 
 ### Installation
 
@@ -43,14 +43,16 @@ To run the application, use the following command:
 mvn spring-boot:run
 ```
 
-The application will start on `http://localhost:8080`.
+The application will start on `http://localhost:12786`.
 
 ### Configuration
 
-- Ensure the log directory is mounted at `/mnt/ldshop/logs`.
-- You can modify the log directory path in `src/main/resources/application.properties` if needed:
+- Ensure the log directory is mounted at `/mnt/your-logs-directory`.
+- You can modify the log directory path in `src/main/resources/application-dev.yaml` if needed:
   ```
-  log.directory=/mnt/ldshop/logs
+  sys:
+  log-directory:
+    - /mnt/your-logs-directory
   ```
 
 ### Usage
