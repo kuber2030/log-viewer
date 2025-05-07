@@ -6,7 +6,9 @@ sys:
   log-queue-size: 4096
   thread-size: 1
   whitelist:
-    - 192.168.12.198
+    - 192.168.13.154
+    - 172.26.96.1
+  process-file-interval: 500
 spring:
   thymeleaf:
     cache: false

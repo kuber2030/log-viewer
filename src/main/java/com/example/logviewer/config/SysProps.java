@@ -28,6 +28,9 @@ public class SysProps {
     // ip白名单
     private List<String> whitelist;
 
+    // 处理文件间隔时间(毫秒)
+    private Long processFileInterval;
+
     public List<String> getLogDirectory() {
         return logDirectory;
     }
@@ -66,5 +69,13 @@ public class SysProps {
 
     public void setWhitelist(List<String> whitelist) {
         this.whitelist = whitelist;
+    }
+
+    public Long getProcessFileInterval() {
+        return processFileInterval;
+    }
+
+    public void setProcessFileInterval(Long processFileInterval) {
+        this.processFileInterval = processFileInterval;
     }
 }

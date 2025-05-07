@@ -127,6 +127,20 @@ public class LogMergerService implements LifeCycle {
                     count++;
                 }
             }
+
+            int reCount = 0;
+            int remainingCapacity = routingBlockQueue.getRemainingCapacity(fileName);
+            // 剩余空间不足1/4时，flush队列，防止消息积压导致延迟
+            if (remainingCapacity >= 0 && remainingCapacity < 256) {
+                while (running && reCount < 768) {
+                    RawLine rawLine = routingBlockQueue.poll(fileName);
+                    if (rawLine != null) {
+                        rawLines.add(rawLine);
+                        reCount++;
+                    }
+                }
+                LOGGER.info("{} reCount={}", fileName, reCount);
+            }
             
             if (!rawLines.isEmpty()) {
                 List<LogEntry> logEntries = asLogEntries(defaultContext, rawLines);
@@ -134,7 +148,7 @@ public class LogMergerService implements LifeCycle {
                     logRepository.save(logEntries);
                 }
             }
-            Thread.sleep(1000L);
+            Thread.sleep(sysProps.getProcessFileInterval());
         } catch (Exception e) {
             LOGGER.error("Error processing fileName {}", fileName, e);
         }

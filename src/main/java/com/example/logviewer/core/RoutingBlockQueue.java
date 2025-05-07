@@ -39,7 +39,7 @@ public class RoutingBlockQueue {
         String fileName = rawLine.getFileName();
         // getOrDefault不保证并发安全
         // BlockingQueue orDefault = projectToQueueMap.getOrDefault(project, new ArrayBlockingQueue(sysProps.getLogQueueSize()));
-        BlockingQueue blockingQueue = projectToQueueMap.computeIfAbsent(fileName, k -> new ArrayBlockingQueue(sysProps.getLogQueueSize()));
+        BlockingQueue<RawLine> blockingQueue = projectToQueueMap.computeIfAbsent(fileName, k -> new ArrayBlockingQueue<>(sysProps.getLogQueueSize()));
         blockingQueue.put(rawLine);
     }
 
@@ -71,6 +71,14 @@ public class RoutingBlockQueue {
             result.add(new QueueStatus(routingKey, queue.remainingCapacity()));
         }
         return result;
+    }
+
+    public int getRemainingCapacity(String project) {
+        BlockingQueue<RawLine> queue = getQueue(project);
+        if (queue != null) {
+            return queue.remainingCapacity();
+        }
+        return -1;
     }
 
 }
