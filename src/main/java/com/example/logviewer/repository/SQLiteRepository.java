@@ -87,7 +87,7 @@ public class SQLiteRepository implements LogRepository {
     public List<LogEntry> query(DateRange range, String project, String env, String level, String threadId,
                                 String keyword, int page, int size) {
         List<LogEntry> logEntries = new ArrayList<>();
-        try (Connection connection = SQLiteConnectionFactory.getConnection()) {
+        try (Connection connection = SQLiteConnectionFactory.getReadConnection()) {
             LocalDateTime startDateTime = DateUtils.convertToLocalDateTime(range.getStartTimestamp());
             LocalDateTime endDateTime = DateUtils.convertToLocalDateTime(range.getEndTimestamp());
             Assert.isTrue(DateUtils.convertToYYYYMM(startDateTime).equals(DateUtils.convertToYYYYMM(endDateTime)), "LOG_VIEWER此版本暂不支持跨月份查询");

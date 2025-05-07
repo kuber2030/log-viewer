@@ -31,7 +31,7 @@ public class SQLiteTableRepository implements TableRepository{
     @Override
     public List<String> getAllTables() {
         // 查询SQLite数据库中的所有表名
-        try (Connection connection = SQLiteConnectionFactory.getConnection()) {
+        try (Connection connection = SQLiteConnectionFactory.getReadConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
             List<String> tableNames = new ArrayList<>();
@@ -74,7 +74,7 @@ public class SQLiteTableRepository implements TableRepository{
                 "        (SELECT page_count * page_size FROM pragma_page_count(), pragma_page_size())\n" +
                 "    ) AS free_space_percent;"; // 空闲百分比
 
-        try (Connection connection = SQLiteConnectionFactory.getConnection();
+        try (Connection connection = SQLiteConnectionFactory.getReadConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
@@ -108,7 +108,7 @@ public class SQLiteTableRepository implements TableRepository{
                 "    name\n" +
                 "ORDER BY\n" +
                 "    size_bytes DESC;";
-        try (Connection connection = SQLiteConnectionFactory.getConnection();
+        try (Connection connection = SQLiteConnectionFactory.getReadConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
              while (resultSet.next()) {
