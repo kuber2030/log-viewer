@@ -8,8 +8,8 @@ import java.sql.*;
  * @createTime 2025/4/24 10:53
  */
 public class SQLiteConnectionFactory {
-    private static Connection connection;
-    private static Connection readConnection;
+    private static volatile Connection connection;
+    private static volatile Connection readConnection;
 
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
