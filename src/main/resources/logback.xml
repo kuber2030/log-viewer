@@ -9,5 +9,7 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="com.example.logviewer" level="DEBUG" />
+    <springProfile name="dev">
+        <logger name="com.example.logviewer" level="INFO" />
+    </springProfile>
 </configuration>
