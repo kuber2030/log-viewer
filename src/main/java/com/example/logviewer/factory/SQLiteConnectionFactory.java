@@ -36,7 +36,10 @@ public class SQLiteConnectionFactory {
                     "level VARCHAR(10)," +
                     "threadId VARCHAR(50)," +
                     "logger VARCHAR(100)," +
-                    "message TEXT)");
+                    "message TEXT);\n" +
+                    "CREATE INDEX idx_logTime_env_level ON "+ tableName + "(logTime,environment, level);\n" +
+                    "CREATE INDEX idx_logTime_threadId ON "+ tableName + "(logTime,threadId);\n" +
+                    "CREATE INDEX idx_logTime_logger ON "+ tableName + "(logTime,logger);\n");
         }
     }
 
